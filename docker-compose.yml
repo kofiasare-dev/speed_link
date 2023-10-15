@@ -1,0 +1,47 @@
+version: "3"
+
+x-rails: &rails-config
+  build: .
+  volumes:
+    - ./:/app
+    - api_gem_path:/bundle
+  environment:
+    - RUBY_YJIT_ENABLE=1
+    - BUNDLE_GEMFILE=/app/Gemfile
+    - BUNDLE_PATH=/bundle/vendor
+    - RAILS_ENV=$RAILS_ENV
+    - DB_HOST=$DB_HOST
+    - DB_PASSWORD=$DB_PASSWORD
+    - HOST_PORT=$HOST_PORT
+    - CONTAINER_PORT=$CONTAINER_PORT
+
+services:
+  db:
+    build:
+      context: db
+    environment:
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+    volumes:
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  api:
+    <<: *rails-config
+    tty: true
+    stdin_open: true
+    ports:
+      - $HOST_PORT:$CONTAINER_PORT
+    command: |
+      sh -c "rm -f /app/tmp/pids/server.pid &&
+      bin/rails db:migrate
+      bin/rails db:seed
+      bin/rails s -b 0.0.0.0 -p $CONTAINER_PORT"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+  api_gem_path:
+    external: true
