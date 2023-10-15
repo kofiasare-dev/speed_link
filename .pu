@@ -2,24 +2,6 @@
 :tasks_before:
   :bundle: []
 :tasks_after:
-  :bundle:
-  - - :generate
-    - - annotate:install --force
-    - {}
-  - - :gsub_file
-    - - lib/tasks/auto_annotate_models.rake
-      - !ruby/regexp /.*'exclude_tests.*/
-      - "      'exclude_tests' => 'true',"
-    - {}
-  - - :gsub_file
-    - - lib/tasks/auto_annotate_models.rake
-      - !ruby/regexp /.*'exclude_fixtures.*/
-      - "      'exclude_fixtures' => 'true',"
-    - {}
-  - - :gsub_file
-    - - lib/tasks/auto_annotate_models.rake
-      - !ruby/regexp /.*'exclude_factories.*/
-      - "      'exclude_factories' => 'true',"
-    - {}
+  :bundle: []
 :installed:
   :annotate: 0.1.0
