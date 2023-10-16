@@ -7,8 +7,12 @@ ruby '~> 3.2.2'
 
 gem 'rails', '7.1.0'
 
+gem 'aasm'
+gem 'active_interaction', '~> 5.3'
 gem 'activerecord-postgis-adapter', '~> 9.0'
 gem 'bootsnap', require: false
+gem 'karafka'
+gem 'karafka-web'
 gem 'pg', '~> 1.1'
 gem 'puma', '6.0'
 gem 'rack-cors'
