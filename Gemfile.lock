@@ -125,6 +125,7 @@ GEM
       rdoc
       reline (>= 0.3.8)
     json (2.6.3)
+    jwt (2.7.1)
     karafka (2.2.7)
       karafka-core (>= 2.2.2, < 2.3.0)
       thor (>= 0.20)
@@ -266,6 +267,7 @@ GEM
       rubocop (>= 1.33.0, < 2.0)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
+    scatter_swap (0.0.3)
     semantic_range (3.0.0)
     spring (4.1.1)
     stringio (3.0.8)
@@ -294,6 +296,7 @@ DEPENDENCIES
   annotate
   awesome_print
   bootsnap
+  jwt (~> 2.7)
   karafka
   karafka-web
   pg (~> 1.1)
@@ -307,6 +310,7 @@ DEPENDENCIES
   rubocop
   rubocop-performance
   rubocop-rails
+  scatter_swap
   spring
   tzinfo-data
 

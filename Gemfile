@@ -11,11 +11,13 @@ gem 'aasm'
 gem 'active_interaction', '~> 5.3'
 gem 'activerecord-postgis-adapter', '~> 9.0'
 gem 'bootsnap', require: false
+gem 'jwt', '~> 2.7'
 gem 'karafka'
 gem 'karafka-web'
 gem 'pg', '~> 1.1'
 gem 'puma', '6.0'
 gem 'rack-cors'
+gem 'scatter_swap'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development do
