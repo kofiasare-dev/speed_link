@@ -97,6 +97,7 @@ GEM
     ast (2.4.2)
     awesome_print (1.9.2)
     base64 (0.1.1)
+    bcrypt (3.1.19)
     bigdecimal (3.1.4)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
@@ -295,6 +296,7 @@ DEPENDENCIES
   activerecord-postgis-adapter (~> 9.0)
   annotate
   awesome_print
+  bcrypt
   bootsnap
   jwt (~> 2.7)
   karafka

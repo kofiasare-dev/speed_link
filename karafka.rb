@@ -2,7 +2,11 @@
 
 class KarafkaApp < Karafka::App
   setup do |config|
-    config.kafka = { 'bootstrap.servers': ENV['KAFKA_HOST'] }
+    config.kafka = {
+      'bootstrap.servers': ENV['KAFKA_HOST'],
+      'compression.codec': 'gzip',
+      'compression.level': '12'
+    }
     config.client_id = 'speed_link'
     # Recreate consumers with each batch. This will allow Rails code reload to work in the
     # development mode. Otherwise Karafka process would not be aware of code changes
@@ -19,26 +23,20 @@ class KarafkaApp < Karafka::App
   # This logger prints the producer development info using the Karafka logger.
   # It is similar to the consumer logger listener but producer oriented.
   Karafka.producer.monitor.subscribe(
-    WaterDrop::Instrumentation::LoggerListener.new(
-      # Log producer operations using the Karafka logger
-      Karafka.logger,
-      # If you set this to true, logs will contain each message details
-      # Please note, that this can be extensive
-      log_messages: false
-    )
+    WaterDrop::Instrumentation::LoggerListener.new(Karafka.logger, log_messages: false)
   )
 
   routes.draw do
     # Uncomment this if you use Karafka with ActiveJob
     # You need to define the topic per each queue name you use
     # active_job_topic :default
-    topic :example do
+    topic :driver_location_updates do
       # Uncomment this if you want Karafka to manage your topics configuration
       # Managing topics configuration via routing will allow you to ensure config consistency
       # across multiple environments
       #
       # config(partitions: 2, 'cleanup.policy': 'compact')
-      consumer ExampleConsumer
+      consumer DriverLocationUpdateConsumer
     end
   end
 end

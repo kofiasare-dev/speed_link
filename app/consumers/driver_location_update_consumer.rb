@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-# Example consumer that prints messages payloads
-class ExampleConsumer < ApplicationConsumer
+class DriverLocationUpdateConsumer < ApplicationConsumer
   def consume
-    messages.each { |message| puts message.payload }
+    ap messages.payloads
+    Location.insert_all messages.payloads
   end
 
   # Run anything upon partition being revoked

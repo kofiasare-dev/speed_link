@@ -10,6 +10,7 @@ gem 'rails', '7.1.0'
 gem 'aasm'
 gem 'active_interaction', '~> 5.3'
 gem 'activerecord-postgis-adapter', '~> 9.0'
+gem 'bcrypt'
 gem 'bootsnap', require: false
 gem 'jwt', '~> 2.7'
 gem 'karafka'

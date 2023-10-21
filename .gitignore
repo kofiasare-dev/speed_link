@@ -31,4 +31,6 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
 .trash
+.byebug_history

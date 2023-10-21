@@ -5,5 +5,10 @@ require 'karafka/web'
 Rails.application.routes.draw do
   mount Karafka::Web::App, at: '/kf'
 
-  get 'up' => 'rails/health#show', as: :rails_health_check
+  namespace :api, default: { format: 'json' } do
+    namespace :v1 do
+      post '/locations', to: 'locations#create'
+      post '/graph', to: 'graph#execute'
+    end
+  end
 end
