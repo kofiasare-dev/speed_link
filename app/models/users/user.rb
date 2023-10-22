@@ -22,5 +22,7 @@
 #  fk_rails_...  (account_id => accounts.id)
 #
 class User < ApplicationRecord
+  include Locateable
+
   belongs_to :account
 end

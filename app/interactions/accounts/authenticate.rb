@@ -7,7 +7,7 @@ module Accounts
     def execute
       payload = compose(Jwt::Decode, inputs)
 
-      compose FindAccount, id: payload[0]['sub']
+      compose FindById, id: payload[0]['sub']
     end
   end
 end

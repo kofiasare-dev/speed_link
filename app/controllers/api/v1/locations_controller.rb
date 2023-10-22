@@ -2,19 +2,15 @@
 
 module Api
   module V1
-    class LocationsController < BaseController
-      def create
-        Locations::Create.run! driver:, location:
-      end
+    class LocationsController < ApplicationController
+      def produce
+        locateable = current_account.user
+        lon = params.required(:lon)
+        lat = params.required(:lat)
 
-      private
+        Locations::Produce.run!(locateable:, lon:, lat:)
 
-      def driver
-        current_account.user
-      end
-
-      def location
-        { lat: params.required(:lat), lon: params.required(:lon) }
+        head :accepted
       end
     end
   end

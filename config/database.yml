@@ -17,6 +17,10 @@ test:
   <<: *default
   database: speed_link_testd
 
+staging:
+  <<: *default
+  database: speed_link_stage
+
 production:
   <<: *default
   database: speed_link_prod

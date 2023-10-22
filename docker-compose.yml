@@ -15,6 +15,9 @@ x-rails: &rails-config
     - HOST_PORT=$HOST_PORT
     - CONTAINER_PORT=$CONTAINER_PORT
     - KAFKA_HOST=$KAFKA_HOST
+    - REDIS_HOST=$REDIS_HOST
+    - RPC_HOST=$RPC_HOST
+    - CABLE_URL=$CABLE_URL
 
 services:
   db:
@@ -49,10 +52,41 @@ services:
     volumes:
       - kafka_data:/bitnami/kafka
 
-  karafka:
+  redis:
+    container_name: redis
+    image: redis:7.2.2-alpine
+    command: redis-server
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+
+  anycable-ws:
+    container_name: anycable-ws
+    image: anycable/anycable-go:1.4-alpine
+    ports:
+      - 8080:8080
+    environment:
+      - ANYCABLE_HOST=$ANYCABLE_HOST
+      - ANYCABLE_RPC_HOST=$ANYCABLE_RPC_HOST
+      - ANYCABLE_HEADERS=$ANYCABLE_HEADERS
+      - ANYCABLE_REDIS_URL=$REDIS_HOST
+    depends_on:
+      - redis
+
+  anycable-rpc:
     <<: *rails-config
-    container_name: karafka
-    command: bin/bundle exec karafka server
+    container_name: anycable-rpc
+    command: bin/bundle exec anycable
+    depends_on:
+      - redis
+
+  sidekiq:
+    <<: *rails-config
+    container_name: sidekiq
+    command: bin/bundle exec sidekiq -C config/sidekiq.yml
+    depends_on:
+      - redis
 
   api:
     <<: *rails-config
@@ -69,10 +103,14 @@ services:
     depends_on:
       - db
       - kafka
-      - karafka
+      - redis
+      - anycable-ws
+      - anycable-rpc
+      - sidekiq
 
 volumes:
   db_data:
   kafka_data:
+  redis_data:
   api_gem_path:
     external: true

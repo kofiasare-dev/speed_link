@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CreateServicesSubscriptionsLocationsAndTrips < ActiveRecord::Migration[7.1]
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def change
     create_table :services do |t|
       t.string :name, null: false
@@ -33,7 +35,8 @@ class CreateServicesSubscriptionsLocationsAndTrips < ActiveRecord::Migration[7.1
 
     create_table :locations do |t|
       t.belongs_to :locateable, polymorphic: true
-      t.st_point :latlon, geographic: true
+      # https://github.com/rgeo/rgeo/blob/main/doc/An-Introduction-to-Spatial-Programming-With-RGeo.md#22-coordinates
+      t.st_point :lonlat, null: false, geographic: true
       t.jsonb :metadata, null: false, default: {}
       t.integer :position
       t.datetime :created_at, null: false, default: -> { 'CURRENT_TIMESTAMP' }
@@ -53,7 +56,7 @@ class CreateServicesSubscriptionsLocationsAndTrips < ActiveRecord::Migration[7.1
       t.timestamps
     end
 
-    create_table :trip do |t|
+    create_table :trips do |t|
       t.string :name
       t.references :rider, null: false, foreign_key: { to_table: 'users' }
       t.references :driver, null: false, foreign_key: { to_table: 'users' }
@@ -70,6 +73,7 @@ class CreateServicesSubscriptionsLocationsAndTrips < ActiveRecord::Migration[7.1
 
     add_index :services, :name, unique: true
     add_index :subscriptions, %i[driver_id service_id], unique: true
+    add_index :locations, :lonlat, using: :gist
     add_index :cabs, %i[driver_id license_plate], unique: true
   end
 end

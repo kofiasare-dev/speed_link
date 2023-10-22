@@ -1,0 +1,16 @@
+default: &default
+  access_logs_disabled: false
+  log_grpc: false
+  broadcast_adapter: redis
+  redis_channel: "__anycable__"
+  redis_url: <%= ENV['REDIS_HOST'] %>
+  rpc_host: <%= ENV['RPC_HOST'] %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

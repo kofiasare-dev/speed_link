@@ -2,12 +2,13 @@
 
 class KarafkaApp < Karafka::App
   setup do |config|
+    config.client_id = 'speed_link'
     config.kafka = {
       'bootstrap.servers': ENV['KAFKA_HOST'],
       'compression.codec': 'gzip',
       'compression.level': '12'
     }
-    config.client_id = 'speed_link'
+
     # Recreate consumers with each batch. This will allow Rails code reload to work in the
     # development mode. Otherwise Karafka process would not be aware of code changes
     config.consumer_persistence = !Rails.env.development?
@@ -27,16 +28,9 @@ class KarafkaApp < Karafka::App
   )
 
   routes.draw do
-    # Uncomment this if you use Karafka with ActiveJob
-    # You need to define the topic per each queue name you use
-    # active_job_topic :default
-    topic :driver_location_updates do
-      # Uncomment this if you want Karafka to manage your topics configuration
-      # Managing topics configuration via routing will allow you to ensure config consistency
-      # across multiple environments
-      #
-      # config(partitions: 2, 'cleanup.policy': 'compact')
-      consumer DriverLocationUpdateConsumer
+    topic Topics::DRIVER_LOCATION_UPDATE do
+      config(partitions: 2, 'cleanup.policy': 'compact')
+      consumer UpdateLocateableLocationConsumer
     end
   end
 end

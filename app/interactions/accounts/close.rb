@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Accounts
-  class CloseAccount < ApplicationInteraction
+  class Close < ApplicationInteraction
     object :account
 
     def execute

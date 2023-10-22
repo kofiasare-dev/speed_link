@@ -12,21 +12,24 @@
 
 ActiveRecord::Schema[7.1].define(version: 2023_10_20_074918) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "citext"
   enable_extension "plpgsql"
   enable_extension "postgis"
 
   create_table "accounts", force: :cascade do |t|
+    t.string "holder", default: "Rider", null: false
     t.string "phone", null: false
-    t.citext "email", null: false
+    t.string "email", null: false
     t.string "password_digest", null: false
     t.string "aasm_state", default: "active", null: false
     t.datetime "verified_at"
     t.jsonb "metadata", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["aasm_state"], name: "index_accounts_on_aasm_state"
     t.index ["email"], name: "index_accounts_on_email"
-    t.index ["phone"], name: "index_accounts_on_phone", unique: true, where: "((aasm_state)::text = ANY ((ARRAY['active'::character varying, 'inactive'::character varying])::text[]))"
+    t.index ["holder"], name: "index_accounts_on_holder"
+    t.index ["phone", "holder"], name: "index_accounts_on_phone_and_holder", unique: true, where: "((aasm_state)::text = ANY ((ARRAY['active'::character varying, 'inactive'::character varying])::text[]))"
+    t.index ["phone"], name: "index_accounts_on_phone"
   end
 
   create_table "cabs", force: :cascade do |t|
@@ -48,16 +51,17 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_20_074918) do
   create_table "locations", force: :cascade do |t|
     t.string "locateable_type"
     t.bigint "locateable_id"
-    t.geography "latlon", limit: {:srid=>4326, :type=>"st_point", :geographic=>true}
+    t.geography "lonlat", limit: {:srid=>4326, :type=>"st_point", :geographic=>true}, null: false
     t.jsonb "metadata", default: {}, null: false
     t.integer "position"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["locateable_type", "locateable_id"], name: "index_locations_on_locateable"
+    t.index ["lonlat"], name: "index_locations_on_lonlat", using: :gist
   end
 
   create_table "profiles", force: :cascade do |t|
-    t.string "firstname", null: false
-    t.string "othernames", null: false
+    t.string "firstname"
+    t.string "othernames"
     t.text "avatar_data"
     t.bigint "account_id"
     t.jsonb "metadata", default: {}, null: false
@@ -100,7 +104,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_20_074918) do
     t.index ["service_id"], name: "index_subscriptions_on_service_id"
   end
 
-  create_table "trip", force: :cascade do |t|
+  create_table "trips", force: :cascade do |t|
     t.string "name"
     t.bigint "rider_id", null: false
     t.bigint "driver_id", null: false
@@ -113,10 +117,10 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_20_074918) do
     t.datetime "ended_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cab_id"], name: "index_trip_on_cab_id"
-    t.index ["driver_id"], name: "index_trip_on_driver_id"
-    t.index ["rider_id"], name: "index_trip_on_rider_id"
-    t.index ["service_id"], name: "index_trip_on_service_id"
+    t.index ["cab_id"], name: "index_trips_on_cab_id"
+    t.index ["driver_id"], name: "index_trips_on_driver_id"
+    t.index ["rider_id"], name: "index_trips_on_rider_id"
+    t.index ["service_id"], name: "index_trips_on_service_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -135,9 +139,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_20_074918) do
   add_foreign_key "service_configs", "services"
   add_foreign_key "subscriptions", "services"
   add_foreign_key "subscriptions", "users", column: "driver_id"
-  add_foreign_key "trip", "cabs"
-  add_foreign_key "trip", "services"
-  add_foreign_key "trip", "users", column: "driver_id"
-  add_foreign_key "trip", "users", column: "rider_id"
+  add_foreign_key "trips", "cabs"
+  add_foreign_key "trips", "services"
+  add_foreign_key "trips", "users", column: "driver_id"
+  add_foreign_key "trips", "users", column: "rider_id"
   add_foreign_key "users", "accounts"
 end

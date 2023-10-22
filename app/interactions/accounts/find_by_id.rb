@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Accounts
-  class FindAccount < BaseInteraction
+  class FindById < BaseInteraction
     integer :id
 
     def execute

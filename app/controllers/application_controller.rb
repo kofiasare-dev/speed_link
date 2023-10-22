@@ -1,13 +1,26 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
-  class UnauthenticatedError < StandardError; end
+  include Authenticateable
+  include Rescuable
 
-  rescue_from UnauthenticatedError do |_e|
-    render json: { error: 'Authentication required' }, status: :unauthorized
+  before_action :authenticate_account!
+  around_action :scan_n_plus_one, if: :development?
+
+  private
+
+  def scan_n_plus_one
+    Prosopite.scan
+    yield
+  ensure
+    Prosopite.finish
   end
 
-  rescue_from ActionController::ParameterMissing do |e|
-    render json: { error: e }, status: :bad_request
+  def log(message, level: :debug, logger: Rails.logger)
+    logger.send(level, message)
+  end
+
+  def development?
+    Rails.env.development?
   end
 end

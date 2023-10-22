@@ -6,9 +6,9 @@
 #
 #  id          :bigint           not null, primary key
 #  avatar_data :text
-#  firstname   :string           not null
+#  firstname   :string
 #  metadata    :jsonb            not null
-#  othernames  :string           not null
+#  othernames  :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  account_id  :bigint
@@ -24,6 +24,6 @@
 class Profile < ApplicationRecord
   belongs_to :account
 
-  validates :firstname, presence: true
-  validates :othernames, presence: true
+  # validates :firstname, presence: true
+  # validates :othernames, presence: true
 end
