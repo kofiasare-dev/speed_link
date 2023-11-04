@@ -12,8 +12,7 @@ Rails.application.routes.draw do
 
   namespace :api, default: { format: 'json' } do
     namespace :v1 do
-      post '/locations', to: 'locations#produce'
-      post '/graph',     to: 'graph#execute'
+      post '/graph', to: 'graph#execute'
     end
   end
 end

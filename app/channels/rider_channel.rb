@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DriverChannel < ApplicationCable::Channel
+class RiderChannel < ApplicationCable::Channel
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
   end

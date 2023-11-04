@@ -28,9 +28,13 @@ class KarafkaApp < Karafka::App
   )
 
   routes.draw do
-    topic Topics::DRIVER_LOCATION_UPDATE do
-      config(partitions: 2, 'cleanup.policy': 'compact')
-      consumer UpdateLocateableLocationConsumer
+    topic Topics::LOCATION_UPDATES do
+      config(
+        partitions: 2,
+        'retention.ms': 86_400_000, # 1 day in ms,
+        'cleanup.policy': 'delete'
+      )
+      consumer UpdateLocationConsumer
     end
   end
 end

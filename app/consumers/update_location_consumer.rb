@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UpdateLocateableLocationConsumer < ApplicationConsumer
+class UpdateLocationConsumer < ApplicationConsumer
   def consume
     Location.cache_all! messages.payloads
   end

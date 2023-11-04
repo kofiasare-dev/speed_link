@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
+  include Pundit::Authorization
   include Authenticateable
   include Rescuable
 
@@ -16,11 +17,11 @@ class ApplicationController < ActionController::API
     Prosopite.finish
   end
 
-  def log(message, level: :debug, logger: Rails.logger)
-    logger.send(level, message)
-  end
-
   def development?
     Rails.env.development?
+  end
+
+  def log(message, level: :debug, logger: Rails.logger)
+    logger.send(level, message)
   end
 end
