@@ -25,7 +25,7 @@ class Location < ApplicationRecord
   class << self
     def cache_all!(locations)
       ActiveRecord::Base.transaction do
-        cache_locations!(locations, ex: 30) { insert_all!(locations) }
+        cache_locations!(locations, ex: 30) { insert_all(locations) }
       end
     end
 

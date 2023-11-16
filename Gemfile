@@ -16,7 +16,6 @@ gem 'bootsnap', require: false
 gem 'graphql'
 gem 'jwt', '~> 2.7'
 gem 'karafka'
-gem 'karafka-web'
 gem 'lograge'
 gem 'pg', '~> 1.1'
 gem 'phonelib'
